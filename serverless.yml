@@ -1,4 +1,4 @@
-service: sdz-saga-integration
+service: hands-on-step-function
 
 package:
   patterns:
@@ -16,7 +16,7 @@ useDotenv: true
 
 provider:
   name: aws
-  profile: seedz-integration
+  profile: default
   runtime: nodejs16.x
   timeout: 30
   stage: dev

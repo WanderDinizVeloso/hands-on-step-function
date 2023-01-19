@@ -1,0 +1,11 @@
+ValidateToken:
+  name: ValidateToken
+  handler: dist/src/Steps/ValidateToken/handler.handler
+
+ValidateSchema:
+  name: ValidateSchema
+  handler: dist/src/Steps/ValidateSchema/handler.handler
+
+DBSave:
+  name: DBSave
+  handler: dist/src/Steps/DBSave/handler.handler

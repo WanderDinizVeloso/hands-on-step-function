@@ -1,7 +1,60 @@
 stateMachines:
   hands-on-step-function:
     definition:
-      StartAt: 
+      StartAt: ValidateToken
 
       States:
-        
+        ValidateToken:
+          Type: Task
+          Resource: arn:aws:lambda:${self:custom.config.region}:${aws:accountId}:function:ValidateToken
+          Catch:
+            - ErrorEquals: [States.ALL]
+              Next: InvalidToken
+          Next: ValidateSchema
+
+        InvalidToken:
+          Type: Pass
+          Result:
+            statusCode: 401
+            body:
+              message: Unauthorized
+          End: true
+
+        ValidateSchema:
+          Type: Task
+          Resource: arn:aws:lambda:${self:custom.config.region}:${aws:accountId}:function:ValidateSchema
+          Catch:
+            - ErrorEquals: [States.ALL]
+              ResultPath: $.body
+              Next: BadRequest
+          Next: DBSave
+
+        BadRequest:
+          Type: Pass
+          ResultPath: $.statusCode
+          Result: 400
+          End: true
+
+        DBSave:
+          Type: Task
+          Resource: arn:aws:lambda:${self:custom.config.region}:${aws:accountId}:function:DBSave
+          Catch:
+            - ErrorEquals: [States.ALL]
+              Next: ServerError
+          Next: Created
+
+        ServerError:
+          Type: Pass
+          Result:
+            statusCode: 500
+            body:
+              message: Server Error
+          End: true
+
+        Created:
+          Type: Pass
+          Result:
+            statusCode: 201
+            body:
+              message: Created
+          End: true
